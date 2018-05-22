@@ -66,7 +66,6 @@ $http->on('request',function ($request,$response){
     }catch (Exception $e){
 
     }
-echo request()->action().PHP_EOL;
     $content=ob_get_contents();
     ob_end_clean();
     $response->header('content-type','text/html;charset=utf-8');
