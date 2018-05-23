@@ -10,3 +10,14 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+    function addErrorLog($message,$type=''){
+        if(is_array($message))
+            $message = json_encode($message);
+        $data = [
+            'type'=>$type,
+            'message'=>$message,
+            'ctime'=>time()
+        ];
+       return  think\Db::table('swoole_error_log')->insert($data);
+    }

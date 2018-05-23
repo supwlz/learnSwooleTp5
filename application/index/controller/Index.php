@@ -1,6 +1,6 @@
 <?php
 namespace app\index\controller;
-
+use app\common\lib\SendSms;
 class Index
 {
     public function index()
@@ -12,5 +12,9 @@ class Index
     public function hello($name = 'ThinkPHP5')
     {
         return 'hello,' . $name;
+    }
+    public function sendSms(){
+        $code = round(1000,9999);
+        return SendSms::sendSmsCode('11111111',$code,'test');
     }
 }
