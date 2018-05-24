@@ -19,7 +19,7 @@ class SendSms
             'status'=>1,
             'ctime'=>time()
         ];
-        $res =  Db::table('swoole_mobile_code')->insert($data);
+        $res =  Db::name('mobile_code')->insert($data);
         sleep(5);//模拟短信延迟
         return $res;
     }

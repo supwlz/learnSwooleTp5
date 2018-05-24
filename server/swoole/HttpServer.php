@@ -22,7 +22,7 @@ class HttpServer
                 'enable_static_handler'=>true, //
                 'document_root'=>'/home/wlz/www/learnSwooleTp5/public/static',//静态资源默认存放目录
                 'work_num'=>5,
-                'task_work_num'=>5
+                'task_worker_num'=>5
             ]);
 
         $this->http_server->on('workerstart',[$this,'onWorkerStart']);
@@ -39,7 +39,7 @@ class HttpServer
         define('APP_PATH', __DIR__ . '/../../application/');
         // ThinkPHP 引导文件
         // 加载基础文件
-        require __DIR__ . '/../../thinkphp/base.php';
+        require __DIR__ . '/../../thinkphp/start.php';
     }
 
     public function onRequest($request,$response){
@@ -83,9 +83,8 @@ class HttpServer
                 ->run()
                 ->send();
         }catch (Exception $e){
-            echo date('Y-m-d H:i:s').PHP_EOL;
+//            echo date('Y-m-d H:i:s').PHP_EOL;
             echo $e->getMessage().PHP_EOL;
-            addErrorLog($e->getMessage(),'onrequest');
         }
         $content=ob_get_contents();
         ob_end_clean();
@@ -97,14 +96,16 @@ class HttpServer
     public function onTask($serv, $task_id,$src_worker_id,$data){
         //分发任务到各个方法中
         $obj = new  app\common\lib\task\Task();
+        $method = $data['method'];
         if(!empty($data['method'])) {
-           return  $obj->$data['method']($data['data']);
+            $data = $data['data'];
+            return  $obj->$method($data);
         }
         return $data;
     }
 
     public function onFinish($serv, $task_id, $data){
-        echo 'this is onFinish:data='.$data."\n";
+        echo 'this is onFinish:task_id='.$task_id." is ok";
     }
 //    public  function onClose($ws, $fd) {
 //        echo "client-{$fd} is closed\n";
