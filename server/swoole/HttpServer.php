@@ -44,6 +44,8 @@ class HttpServer
 
     public function onRequest($request,$response){
         $_SERVER = [];
+        //方便在框架中调用server
+        $_SERVER['swoole_http_server'] = $this->http_server;
         $_REQUEST = [];
         $_GET = [];
         $_POST = [];
@@ -93,8 +95,11 @@ class HttpServer
 
 
     public function onTask($serv, $task_id,$src_worker_id,$data){
-        echo 'this is onTask:task_id = '.$task_id.',src_worker_id='.$src_worker_id.', data='.$data."\n";
-        sleep(10);
+        //分发任务到各个方法中
+        $obj = new  app\common\lib\task\Task();
+        if(!empty($data['method'])) {
+           return  $obj->$data['method']($data['data']);
+        }
         return $data;
     }
 

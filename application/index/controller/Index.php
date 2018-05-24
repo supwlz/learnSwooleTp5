@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use app\common\lib\SendSms;
+use think\Db;
 class Index
 {
     public function index()
@@ -13,8 +14,25 @@ class Index
     {
         return 'hello,' . $name;
     }
-    public function sendSms(){
-        $code = round(1000,9999);
-        return SendSms::sendSmsCode('11111111',$code,'test');
+
+    public  function loginSendSms(){
+        $mobile =$_REQUEST['mobile'];
+        $type='login';
+        return sendSms($mobile,$type);
+    }
+    public function login(){
+        $mobile =$_REQUEST['mobile'];
+        $code = $_REQUEST['code'];
+        $code_info = Db::table('swoole_mobile_code')
+            ->where('status',1)
+            ->where('mobile',$mobile)
+            ->where('type','login')
+            ->find();
+        if(empty($code_info))
+            return error( '请先发送验证码');
+        Db::table('swoole_mobile_code')->where('id', $code_info['id'])->update(['status' => 0]);
+        if($code!=$code_info['code'])
+            return error( '验证码错误');
+        return success( '登录成功');
     }
 }

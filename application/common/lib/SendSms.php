@@ -20,6 +20,7 @@ class SendSms
             'ctime'=>time()
         ];
         $res =  Db::table('swoole_mobile_code')->insert($data);
+        sleep(5);//模拟短信延迟
         return $res;
     }
 
